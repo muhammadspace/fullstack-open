@@ -15,5 +15,4 @@ sequenceDiagram
     browser->>browser: redraw notes
     deactivate browser
     note right of browser: The browser executes the JavaScript code to redraw the list of notes
-
 ```
