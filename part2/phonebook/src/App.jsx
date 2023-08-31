@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -8,13 +8,13 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect( () => {
-    axios
-      .get("https://probable-potato-p677x67prgrfvjw-3001.app.github.dev/persons")
-      .then( res => setPersons(res.data))
+    personService.getAll()
+      .then( data => setPersons(data))
   }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const newPersonObject = { name: newName, number: newNumber }
 
     let exists = false
     persons.forEach( person => {
@@ -26,14 +26,40 @@ const App = () => {
 
     if (exists)
     {
-      alert(`${newName} is already added to the phonebook`)
-      return
+        if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new one?`))
+        {
+            const id = persons.find( person => person.name == newName).id
+            personService
+                .update(id, newPersonObject)
+                .then( data => {
+                    setPersons(persons.map( person => person.name === newName ? data : person))
+                    setNewName('')
+                    setNewNumber('')
+                })
+        
+            return
+        }
     }
-    const newPersonObject = { name: newName, number: newNumber }
 
-    setPersons(persons.concat(newPersonObject))
-    setNewName('')
-    setNewNumber('')
+    personService.create(newPersonObject)
+    .then( data => {
+        setPersons(persons.concat(data))
+        setNewName('')
+        setNewNumber('')
+    })
+
+  }
+
+  const handleDelete = (name) => {
+    if (window.confirm(`Delete ${name}?`))
+    {
+        const id = persons.find( person => person.name === name).id 
+        personService
+            .deletePerson(id)
+            .then( res => {
+                setPersons(persons.filter( person => person.name !== name))
+            })
+    }
   }
 
   const handleNameChange = (e) => setNewName(e.target.value)
@@ -52,7 +78,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
     </div>
   )
 }
@@ -70,12 +96,16 @@ const PersonForm = ({ handleSubmit, newName, handleNameChange, newNumber, handle
   )
 }
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
   return (
     <ul>
       { 
         (filter === '') 
-        ? persons.map( person => <li key={person.name}>{person.name} {person.number}</li>) 
+        ? persons.map( person => 
+            <li key={person.name}>
+                {person.name} {person.number}
+                <button onClick={() => handleDelete(person.name)}>delete</button>
+            </li>) 
         : persons.map( person => person.name.toLowerCase().includes(filter.toLowerCase()) ? <li key={person.name}>{person.name} {person.number}</li> : null)
       }
       </ul>
