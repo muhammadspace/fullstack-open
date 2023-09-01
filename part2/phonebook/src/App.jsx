@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import Error from './components/Error'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect( () => {
     personService.getAll()
@@ -33,6 +37,15 @@ const App = () => {
                 .update(id, newPersonObject)
                 .then( data => {
                     setPersons(persons.map( person => person.name === newName ? data : person))
+                    setNotificationMessage(`Changed ${newName}'s phone number to ${data.number}`)
+                    setTimeout(() => setNotificationMessage(null), 3000)
+                    setNewName('')
+                    setNewNumber('')
+                })
+                .catch( error => {
+                    setPersons(persons.filter( person => person.name !== newName))
+                    setErrorMessage(`Information of ${newName} has already been removed from the server.`)
+                    setTimeout(() => setErrorMessage(null), 3000)
                     setNewName('')
                     setNewNumber('')
                 })
@@ -44,6 +57,8 @@ const App = () => {
     personService.create(newPersonObject)
     .then( data => {
         setPersons(persons.concat(data))
+        setNotificationMessage(`Added ${newName}`)
+        setTimeout(() => setNotificationMessage(null), 3000)
         setNewName('')
         setNewNumber('')
     })
@@ -58,6 +73,8 @@ const App = () => {
             .deletePerson(id)
             .then( res => {
                 setPersons(persons.filter( person => person.name !== name))
+                setNotificationMessage(`Deleted ${name}`)
+                setTimeout(() => setNotificationMessage(null), 3000)
             })
     }
   }
@@ -69,6 +86,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <Filter handleFilter={handleFilter} />
       <PersonForm 
         handleSubmit={handleSubmit}

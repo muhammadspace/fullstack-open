@@ -1,0 +1,15 @@
+.notification {
+    background: greenyellow;
+    color: green;
+    padding: 7px; 
+    margin: 10px;
+    box-shadow: 0px 5px 5px rgba(0, 50, 0, 0.1);
+}
+
+.error {
+    background: pink;
+    color: red;
+    padding: 7px; 
+    margin: 10px;
+    box-shadow: 0px 5px 5px rgba(0, 50, 0, 0.1);
+}
