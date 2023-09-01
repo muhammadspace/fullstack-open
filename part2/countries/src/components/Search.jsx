@@ -98,7 +98,7 @@ const Weather = ({ capital }) => {
 
     const getGeoEncoding = (city) => {
         return axios
-            .get(`http://api.openweathermap.org/geo/1.0/direct?q=${capital}&appid=${api_key}`)
+            .get(`https://api.openweathermap.org/geo/1.0/direct?q=${capital}&appid=${api_key}`)
             .then( res => { return { lat: res.data[0].lat, lon: res.data[0].lon } } )
     }
 
