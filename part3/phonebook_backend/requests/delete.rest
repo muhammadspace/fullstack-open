@@ -1,0 +1,7 @@
+POST https://probable-potato-p677x67prgrfvjw-3001.app.github.dev/api/persons/
+content-type: application/json
+
+{
+    "name": "andres",
+    "number": "1231231113"
+}
