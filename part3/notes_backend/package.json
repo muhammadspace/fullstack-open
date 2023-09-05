@@ -11,6 +11,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -r dist && cd ../../part2/part2-notes-frontend-part2-8 && npm run build && cp -r dist ../../part3/notes_backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m 'rebuilt and deployed' && git push",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
