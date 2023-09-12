@@ -1,6 +1,7 @@
-POST https://probable-potato-p677x67prgrfvjw-3002.app.github.dev/api/notes
+POST http://localhost:3001/api/notes
 content-type: application/json
 
 {
-    "content": "asdsa"
+    "content": "testing mongoose with REST Client",
+    "important": true
 }
