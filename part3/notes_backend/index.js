@@ -16,12 +16,14 @@ const unknownEndpoint = (request, response) => {
 }
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error)
+    console.log(error)
 
-  if (error.name === "CastError")
-    res.status(400).send({error: "Malformatted id"})
+    if (error.name === "CastError")
+        res.status(400).send({error: "Malformatted id"})
+    if (error.name === "ValidationError")
+        res.status(400).send({error: error.message})
 
-  next(error)
+    next(error)
 }
 
 let notes = [
@@ -53,23 +55,19 @@ app.get('/api/notes', (req, res) => {
   })
 })
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
-
-  if (!body.content) {
-    return response.status(400).json({ 
-      error: 'content missing' 
-    })
-  }
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
   })
 
-  note.save().then( savedNote => {
-    response.json(savedNote)
-  })
+  note.save()
+    .then( savedNote => {
+        response.json(savedNote)
+    })
+    .catch( error => next(error))
 })
 
 app.get('/api/notes/:id', (request, response, next) => {
@@ -90,10 +88,15 @@ app.delete('/api/notes/:id', (request, response, next) => {
 })
 
 app.put("/api/notes/:id", (req, res, next) => {
-  console.log(req.body);
-  Note.findByIdAndUpdate(req.params.id, req.body, {new: true})
-    .then( updated => res.status(200).json(updated) )
-    .catch( error => next(error) )
+    const { content, important } = req.body
+
+    Note.findByIdAndUpdate(
+        req.params.id,
+        { content, important },
+        { new: true, runValidators: true, context: "query" }
+    )
+        .then( updated => res.status(200).json(updated) )
+        .catch( error => next(error) )
 })
 
 app.use(unknownEndpoint)

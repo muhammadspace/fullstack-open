@@ -7,12 +7,12 @@ content-type: application/json
 }
 
 ### 
-DELETE http://localhost:3001/api/notes/64fd95468c4345c229fd5041
+DELETE http://localhost:3001/api/notes/650303784014ec83c90225ac
 
 ###
-PUT http://localhost:3001/api/notes/64fd95238c4345c229fd5041
+PUT http://localhost:3001/api/notes/650303bd4014ec83c90225ba
 content-type: application/json
 
 {
-    "content": "Testing Mongoose with REST Client"
+    "content": "aaaaa"
 }
