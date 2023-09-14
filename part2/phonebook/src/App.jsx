@@ -62,6 +62,11 @@ const App = () => {
         setNewName('')
         setNewNumber('')
     })
+    .catch( error => {
+        console.log(error)
+        setErrorMessage(error.response.data.error)
+        setTimeout( () => setErrorMessage(null), 3000 )
+    })
 
   }
 
@@ -69,10 +74,11 @@ const App = () => {
     if (window.confirm(`Delete ${name}?`))
     {
         const id = persons.find( person => person.name === name).id 
+        console.log(id)
         personService
             .deletePerson(id)
             .then( res => {
-                setPersons(persons.filter( person => person.name !== name))
+                setPersons(persons.filter( person => person.id !== id))
                 setNotificationMessage(`Deleted ${name}`)
                 setTimeout(() => setNotificationMessage(null), 3000)
             })
@@ -121,11 +127,11 @@ const Persons = ({ persons, filter, handleDelete }) => {
       { 
         (filter === '') 
         ? persons.map( person => 
-            <li key={person.name}>
+            <li key={person.id}>
                 {person.name} {person.number}
                 <button onClick={() => handleDelete(person.name)}>delete</button>
             </li>) 
-        : persons.map( person => person.name.toLowerCase().includes(filter.toLowerCase()) ? <li key={person.name}>{person.name} {person.number}</li> : null)
+        : persons.map( person => person.name.toLowerCase().includes(filter.toLowerCase()) ? <li key={person.id}>{person.name} {person.number}</li> : null)
       }
       </ul>
   )

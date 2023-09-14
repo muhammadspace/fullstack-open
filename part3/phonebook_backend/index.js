@@ -11,13 +11,16 @@ const unknownEndpoint = (req, res) => {
 }
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error)
-  if (error.name === "CastError")
-    res.status(400).json({error: "Malformatted ID"})
-  if (error.name === "SyntaxError")
-    res.status(500).json({error: "Internal server syntax error"})
+    console.log(error)
+    if (error.name === "CastError")
+        res.status(400).json({error: "Malformatted ID"})
+    if (error.name === "SyntaxError")
+        res.status(500).json({error: "Internal server syntax error"})
+    if (error.name === "ValidationError")
+        res.status(400).json({ error: error.message })
 
-  next(error)
+
+    next(error)
 }
 
 morgan.token('body', (req, res) => JSON.stringify(req.body))
@@ -95,8 +98,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
       if (result)
         res.status(204).end()
       else
-        res.status(404).json({error: "404: No person was found with that ID."})
-    })
+        res.status(404).json({error: "404: No person was found with that ID."}) })
     .catch( error => next(error) )
 })
 
@@ -108,14 +110,21 @@ app.post('/api/persons', (req, res, next) => {
   )
 
   person.save()
-    .then( response => console.log(`Added ${person.name}`) )
-    .catch( error => console.error(`Couldn't add ${person.name}`, error) )
+    .then( response => {
+        console.log(`Added ${person.name}`) 
+        res.status(200).json(response)
+    })
+    .catch( error => next(error) )
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
+  const { name, number } = req.body
 
-  Person.findByIdAndUpdate(id, req.body, {new: true})
+  Person.findByIdAndUpdate(
+    id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" })
     .then( result => res.status(200).json(result) )
     .catch( error => next(error) )
 })
