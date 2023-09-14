@@ -15,6 +15,14 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+const errorHandler = (error, req, res, next) => {
+  console.log(error)
+
+  if (error.name === "CastError")
+    res.status(400).send({error: "Malformatted id"})
+
+  next(error)
+}
 
 let notes = [
   {
@@ -64,20 +72,33 @@ app.post('/api/notes', (request, response) => {
   })
 })
 
-app.get('/api/notes/:id', (request, response) => {
-    Note.findById(request.params.id).then( note => {
-        response.json(note)
-    })
+app.get('/api/notes/:id', (request, response, next) => {
+    Note.findById(request.params.id)
+      .then( note => {
+        console.log(note)
+          if (note) response.status(200).json(note)
+          else response.status(404).send('404 Not Found')
+      })
+      .catch( error => next(error))
+
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
+app.delete('/api/notes/:id', (request, response, next) => {
+  Note.findByIdAndDelete(request.params.id)
+    .then( result => response.status(204).end() )
+    .catch( error => next(error) )
+})
 
-  response.status(204).end()
+app.put("/api/notes/:id", (req, res, next) => {
+  console.log(req.body);
+  Note.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    .then( updated => res.status(200).json(updated) )
+    .catch( error => next(error) )
 })
 
 app.use(unknownEndpoint)
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

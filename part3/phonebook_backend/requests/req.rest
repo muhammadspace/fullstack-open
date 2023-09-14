@@ -1,7 +1,18 @@
-POST https://probable-potato-p677x67prgrfvjw-3001.app.github.dev/api/persons/
+POST http://localhost:3002/api/persons/
 content-type: application/json
 
 {
     "name": "andres",
     "number": "1231231113"
+}
+
+###
+DELETE http://localhost:3002/api/persons/65020eaf15e87060aa43259d
+
+###
+PUT http://localhost:3001/api/persons/64fcef5862c97073916ecb4
+content-type: application/json
+
+{
+    "number": "2312412"
 }

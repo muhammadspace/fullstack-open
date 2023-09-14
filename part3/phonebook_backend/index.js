@@ -1,8 +1,24 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person.js')
 
 const app = express()
+
+const unknownEndpoint = (req, res) => {
+  res.status(400).send({error: 'Unknown endpoint'})
+}
+
+const errorHandler = (error, req, res, next) => {
+  console.log(error)
+  if (error.name === "CastError")
+    res.status(400).json({error: "Malformatted ID"})
+  if (error.name === "SyntaxError")
+    res.status(500).json({error: "Internal server syntax error"})
+
+  next(error)
+}
 
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 
@@ -44,64 +60,68 @@ let phonebook = [
 ]
 
 app.get('/api/persons', (req, res) => {
-  res.json(phonebook)
+  Person.find({}).then( people => res.json(people) )
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
   const dateReceived = new Date()
-  res.send(`
-    <p>Phonebook has information for ${phonebook.length} people</p>
-    <p>${dateReceived.toString()}</p>
-  `)
+  Person.find({}).then( people => {
+    const length = people.length
+    res.send(`
+      <p>Phonebook has information for ${length} people</p>
+      <p>${dateReceived.toString()}</p>
+    `)})
+    .catch( error => next(error) )
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = phonebook.find( p => p.id === id )
+app.get('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
 
-  if (person)
-    res.json(person)
-  else
-    res.status(404).send('<p>404: not found</p>')
+  Person.findById(id)
+    .then( person => {
+      if (person) 
+        res.status(200).json(person)
+      else 
+        res.status(404).send('404 Not Found')
+    })
+    .catch( error => next(error) )
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = phonebook.find( p => p.id === id)
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
 
-  if (person)
-  {
-    phonebook = phonebook.filter( entry => entry.id !== id )
-    res.status(204).end()
-console.log(`${person.name} deleted`)
-  }
-  else
-  {
-    res.status(404).send('<p>There is no entry with this ID.</p>')
-  }
+  Person.findByIdAndDelete(id)
+    .then( result => {
+      if (result)
+        res.status(204).end()
+      else
+        res.status(404).json({error: "404: No person was found with that ID."})
+    })
+    .catch( error => next(error) )
 })
 
-app.post('/api/persons', (req, res) => {
-  const newId = Math.floor((Math.random() + 100) * 10) 
-  const newPerson = { ...req.body, id: newId }
+app.post('/api/persons', (req, res, next) => {
+  const person = Person(
+    {
+      ...req.body,
+    }
+  )
 
-  if (newPerson)
-  {
-    if (!newPerson.name)
-      return res.status(400).json({ error: 'name is missing' })
-    if (!newPerson.number)
-      return res.status(400).json({ error: 'number is missing' })
-    if (phonebook.find( person => person.name === newPerson.name ))
-      return res.status(400).json({ error: 'name must be unique' })
-console.log(`${newPerson.name} added`)
-    phonebook.push(newPerson)
-    res.json(newPerson)
-  }
-  else
-  {
-    res.status(400).send('could not read request data')
-  }
+  person.save()
+    .then( response => console.log(`Added ${person.name}`) )
+    .catch( error => console.error(`Couldn't add ${person.name}`, error) )
 })
 
-const PORT = 3001
+app.put('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+
+  Person.findByIdAndUpdate(id, req.body, {new: true})
+    .then( result => res.status(200).json(result) )
+    .catch( error => next(error) )
+})
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
+
+const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
