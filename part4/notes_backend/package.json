@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "eslint": "^8.49.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1"
   },
   "dependencies": {
@@ -17,10 +18,12 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m 'rebuilt and deployed' && git push",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
-}
+  "description": "",
+  "jest": {
+    "testEnvironment": "node"
+  }}
