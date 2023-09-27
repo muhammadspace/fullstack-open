@@ -1,31 +1,32 @@
-const config = require("./utils/config.js")
-const logger = require("./utils/logger.js")
-const express = require("express")
-const cors = require("cors")
-const mongoose = require("mongoose")
-const notesRouter = require("./controllers/notes.js")
-const middleware = require("./utils/middleware.js")
-
-mongoose.set("strictQuery", false)
-
-const uri = config.MONGODB_URI
-logger.info("Connecting to", uri)
-mongoose.connect(uri)
-    .then( res => logger.info("Connected to MongoDB") )
-    .catch( error => logger.error("Error connecting to MongoDB: ", error) )
-
+const config = require('./utils/config')
+const express = require('express')
 const app = express()
+const cors = require('cors')
+const logger = require('./utils/logger')
+const mongoose = require('mongoose')
+require('express-async-errors')
 
-app.use(express.static("dist"))
+const notesRouter = require('./controllers/notes')
+const middleware = require('./utils/middleware')
+
+mongoose.set('strictQuery', false)
+
+logger.info('connecting to', config.MONGODB_URI)
+
+mongoose.connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connecting to MongoDB:', error.message)
+  })
+
 app.use(cors())
+app.use(express.static('dist'))
 app.use(express.json())
 app.use(middleware.requestLogger)
 
-app.use("/api/notes", notesRouter)
-
-app.get("/", (req, res) => {
-    res.send("<h1>Hello World!</h1>")
-})
+app.use('/api/notes', notesRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

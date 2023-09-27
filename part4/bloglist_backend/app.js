@@ -17,6 +17,7 @@ app.use(cors())
 app.use(express.json())
 app.use("/api/blogs", blogRouter)
 
+
 app.get("/", (req, res) => {
     res.send("<h1>Hello Blog List!")
 })

@@ -7,3 +7,17 @@ content-type: application/json
     "url": "https://example.com/",
     "likes": 12
 }
+
+###
+GET http://localhost:3001/api/blogs
+
+###
+DELETE http://localhost:3001/api/blogs/651334e18617a901dfac7cfd
+
+###
+PUT http://localhost:3001/api/blogs/6513360aee8c69a7928079e0
+content-type: application/json
+
+{
+    "likes": -1
+}

@@ -1,32 +1,35 @@
 {
-  "devDependencies": {
-    "eslint": "^8.49.0",
-    "jest": "^29.7.0",
-    "nodemon": "^3.0.1"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "mongoose": "^7.5.0",
-    "supertest": "^6.3.3"
-  },
-  "name": "notes_backend",
+  "name": "backend",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "build:ui": "rm -r dist && cd ../../part2/part2-notes-frontend-part2-8 && npm run build && cp -r dist ../../part3/notes_backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m 'rebuilt and deployed' && git push",
-    "start": "cross-env NODE-ENV=production node index.js",
-    "dev": "cross-env NODE-ENV=development nodemon index.js",
-    "test": "cross-env NODE-ENV=test jest --verbose --runInBand"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build:ui": "rm -r dist && cd ../../part2/part2-notes-frontend-part2-8 && npm run build && cp -r dist ../../part4/notes_backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs",
+    "lint": "eslint .",
+    "test": "jest --verbose --runInBand"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "mongoose": "^6.8.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0",
+    "jest": "^29.3.1",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
+  },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globalTeardown": "./test-teardown.js"
   }
 }
