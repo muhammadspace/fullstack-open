@@ -1,8 +1,8 @@
-POST http://localhost:3001/api/notes
+POST http://localhost:3001/api/notes/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2NTFkNmFjOWEzODJiZDJmODE2OTYyYTgiLCJpYXQiOjE2OTY0Mjk3MjR9.C0j_fAcreyinviwPY5GJ1aFszUHTrQX0e7njZ7j8hXw
 
 {
-  "content": "a note with a user",
-  "important": true,
-  "userId": "651474fff4ffdfb9a2755080"
+	"content": "auth test",
+	"important": false
 }
