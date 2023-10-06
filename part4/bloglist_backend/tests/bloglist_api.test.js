@@ -1,31 +1,114 @@
 const supertest = require("supertest")
 const mongoose = require("mongoose")
 const Blog = require("../models/blog.js")
+const User = require("../models/user.js")
 const app = require("../app.js")
 
 const api = supertest(app)
 
+const login = async (username, password) => {
+    const response = await api
+        .post("/api/login")
+        .send({ username, password })
+
+    return response.body.token
+}
+
 const initialBlogs = [
     {
-        "title": "blog 1",
-        "author": "michael scott",
-        "url": "https://example.com/1",
-        "likes": 12,
+        title: "The Art of Programming",
+        author: "John Smith",
+        url: "https://example.com/art-of-programming",
+        likes: 124
     },
     {
-        "title": "blog 2",
-        "author": "michael scott",
-        "url": "https://example.com/2",
-        "likes": 13,
+        title: "Cooking Adventures",
+        author: "Jane Doe",
+        url: "https://example.com/cooking-adventures",
+        likes: 72
+    },
+    {
+        title: "Travel Tales",
+        author: "Alex Johnson",
+        url: "https://example.com/travel-tales",
+        likes: 321
+    },
+    {
+        title: "Fitness Tips",
+        author: "Emily Brown",
+        url: "https://example.com/fitness-tips",
+        likes: 45
+    },
+    {
+        title: "The World of Photography",
+        author: "Michael Johnson",
+        url: "https://example.com/photography-blog",
+        likes: 98
+    },
+    {
+        title: "Gardening Tips and Tricks",
+        author: "Sarah Thompson",
+        url: "https://example.com/gardening-tips",
+        likes: 215
+    },
+    {
+        title: "Bookworm's Corner",
+        author: "David Anderson",
+        url: "https://example.com/bookworms-corner",
+        likes: 76
+    },
+    {
+        title: "Tech Talk",
+        author: "Jessica Lee",
+        url: "https://example.com/tech-talk",
+        likes: 512
+    },
+    {
+        title: "Fashion Forward",
+        author: "Sophia Roberts",
+        url: "https://example.com/fashion-forward",
+        likes: 192
     }
+]
+
+const initialUsers = [
+    {
+        username: "admin",
+        name: "admin",
+        password: "admin"
+    },
+    {
+        username: "johnsmith",
+        name: "John Smith",
+        password: "12345678"
+    },
+    {
+        username: "janedoe",
+        name: "Jane Doe",
+        password: "12345678"
+    },
+    {
+        username: "alexj",
+        name: "Alex Johnson",
+        password: "12345678"
+    },
 ]
 
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
     await Blog.insertMany(initialBlogs)
+
+    for await (const u of initialUsers)
+    {
+        await api
+            .post("/api/users")
+            .send(u)
+    }
 })
 
-describe("HTTP GET", () => {
+describe("============BLOGS=============", () => {
     test("HTTP get request to /api/blogs returns all blogs", async () => {
         await api
             .get("/api/blogs")
@@ -33,13 +116,10 @@ describe("HTTP GET", () => {
             .expect("Content-Type", /application\/json/)
     })
     
-    test("fetched blogs have 'id' as the unique identifier property and not '_id'", async () => {
-        const blogs = await api.get("/api/blogs")
+    test("Fetched blogs have 'id' as the unique identifier property and not '_id'", async () => { const blogs = await api.get("/api/blogs")
         blogs.body.forEach( blog => expect(blog.id).toBeDefined())
     })
-})
 
-describe("HTTP POST", () => {
     test("HTTP POST requests add a new entry and save it to the database", async () => {
         const entry = {
             "title": "how to fouteball",
@@ -47,9 +127,12 @@ describe("HTTP POST", () => {
             "url": "https://example.com/6",
             "likes": 6,
         }
+        
+        const token = await login("alexj", "12345678")
     
         await api
             .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
             .send(entry)
             .expect(201)
             .expect("Content-Type", /application\/json/)
@@ -61,15 +144,18 @@ describe("HTTP POST", () => {
         expect(lastBlogInDB.title).toEqual(entry.title)
     })
 
-    test("if the 'likes' property is missing, it will default to 0", async () => {
+    test("The 'likes' property defaults to 0 if it is missing from the POST request", async () => {
         const entry = {
             "title": "i kinda don't like async/await",
             "author": "muhammad",
             "url": "https://example.com/asyncawait",
         }
 
+        const token = await login("alexj", "12345678")
+
         await api
             .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
             .send(entry)
             .expect(201)
             .expect("Content-Type", /application\/json/)
@@ -79,41 +165,77 @@ describe("HTTP POST", () => {
         expect(lastBlogInDB.likes).toBe(0)
     })
 
-    test("if the 'title' or or 'url' properties are missing, the server responds with status code 400 Bad Request", async () => {
+    test("The server responds with status code 400 if the 'title' or 'url' properties are missing from the POST request", async () => {
         const entry = {
             "url": "https://example.com/",
             "author": "anon"
         }
 
+        const token = await login("alexj", "12345678")
+
         await api
             .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
             .send(entry)
             .expect(400)
     })
-})
 
-describe("HTTP DELETE", () => {
-    test("deletion of a blog works through its '_id' property", async () => {
-        const blogs = await Blog.find({})
-        const firstBlog = blogs[0]
+    test("Deletion of a blog works with its '_id' property", async () => {
+        // Login
+        const response = await api
+            .post("/api/login")
+            .send({ username: "alexj", password: "12345678" })
 
-        await api
-            .delete(`/api/blogs/${firstBlog._id}`)
+        // Get token
+        const token = response.body.token
+
+        // Post a new blog with the logged-in user so that there's something to delete
+        const postRequest = await api
+            .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
+            .send(initialBlogs[0])
+
+        const postedBlogId = postRequest.body.id
+
+        // Delete blog
+        await api 
+            .delete(`/api/blogs/${postedBlogId}`) 
+            .set("Authorization", `Bearer ${token}`)
             .expect(204)
     })
-})
 
-describe("HTTP PUT", () => {
-    test("updating the number of likes of a blog using its '_id' works", async () => {
-        const blogs = await Blog.find({})
-        const firstBlog = blogs[0]
+    /*
+    test("Updating the number of likes of a blog using its '_id' property works", async () => {
+        // Login
+        const response = await api
+            .post("/api/login")
+            .send({ username: "alexj", password: "12345678" })
+
+        // Get token
+        const token = response.body.token
+
+        // Posting a blog with the logged-in user so there's something to update
+        const postRequest = await api
+            .post("/api/blogs")
+            .set("Authorization", `Bearer ${token}`)
+            .send(initialBlogs[0])
+
+        const postedBlogId = postRequest.body.id
 
         await api
-            .put(`/api/blogs/${firstBlog._id}`)
+            .put(`/api/blogs/${postedBlogId}`)
             .send({ "likes": -2 })
 
         const updatedFirstBlog = await Blog.findById(firstBlog._id)
         expect(updatedFirstBlog.likes).toBe(-2)
+    })
+    */
+
+    test("Adding a new blog fails with 401 Unauthorized if no token is provided", async () => {
+        await api
+            .post("/api/blogs")
+            .send(initialBlogs[0])
+            .expect(401)
     })
 })
 

@@ -6,6 +6,7 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const blogRouter = require("./controllers/blogs.js")
 const usersRouter = require("./controllers/users.js")
+const loginRouter = require("./controllers/login.js")
 
 const app = express()
 
@@ -17,13 +18,15 @@ mongoose.connect(config.MONGODB_URI)
 
 app.use(cors())
 app.use(express.json())
+app.use(middleware.tokenExtractor)
 app.use(middleware.requestLogger)
-app.use("/api/blogs", blogRouter)
+app.use("/api/blogs", middleware.userExtractor, blogRouter)
 app.use("/api/users", usersRouter)
+app.use("/api/login", loginRouter)
 
 
 app.get("/", (req, res) => {
-	res.send("<h1>Hello Blog List!")
+    res.send("<h1>Hello Blog List!")
 })
 
 app.use(middleware.errorHandler)
