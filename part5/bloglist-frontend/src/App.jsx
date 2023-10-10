@@ -15,21 +15,43 @@ const App = () => {
         )  
     }, [])
 
+    useEffect(() => {
+        console.log("Fetching local user credentials...")
+        const user = JSON.parse(window.localStorage.getItem("bloglistLoggedInUser"))
+
+        if (user)
+        {
+            setUser(user)
+            console.log(`Logged in as ${user.name}`)
+        }
+        else
+        {
+            console.log("No local user credentials found. Please log in")
+        }
+    }, [])
+
     const handleLogin = async e => {
         e.preventDefault()
 
         try
         {
             const user = await loginService.login({ username, password  })
-            console.log(`Logging in as ${user.name}`)
+            window.localStorage.setItem("bloglistLoggedInUser", JSON.stringify(user))
             setUser(user)
             setUsername("")
             setPassword("")
+            console.log(`Logging in as ${user.name}`)
         }
         catch (error)
         {
             console.error("Invalid credentials - couldn't log in.", error)
         }
+    }
+
+    const handleLogout = e => {
+        window.localStorage.removeItem("bloglistLoggedInUser")
+        setUser(null)
+        console.log("Logged out")
     }
 
     const loginForm = () => (
@@ -55,7 +77,6 @@ const App = () => {
                 <button>login</button>
             </form>
         </>
-
     )
 
     return (
@@ -63,7 +84,7 @@ const App = () => {
             { !user && loginForm() }
             { user && <>
                     <h2>blogs</h2>
-                    <p>{user.name} logged in</p>    
+                    <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>    
                     {blogs.map(blog =>
                         <Blog key={blog.id} blog={blog} />
                     
