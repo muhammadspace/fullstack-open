@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from "./components/Notification.jsx"
+import ErrorMessage from "./components/ErrorMessage.jsx"
 import blogService from './services/blogs'
 import loginService from "./services/login.js"
 
@@ -11,6 +13,8 @@ const App = () => {
     const [title, setTitle] = useState("")
     const [author, setAuthor] = useState("")
     const [url, setUrl] = useState("")
+    const [notification, setNotification] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
@@ -49,6 +53,8 @@ const App = () => {
         }
         catch (error)
         {
+            setErrorMessage("Invalid credentials - couldn't log in.")
+            setTimeout(() => setErrorMessage(""), 5000)
             console.error("Invalid credentials - couldn't log in.", error)
         }
     }
@@ -67,6 +73,8 @@ const App = () => {
         {
             const newBlog = await blogService.create({ title, author, url })
             setBlogs(blogs.concat(newBlog))
+            setNotification(`A new blog ${title} by ${author} added`)
+            setTimeout(() => setNotification(""), 5000)
             setTitle("")
             setAuthor("")
             setUrl("")
@@ -74,6 +82,8 @@ const App = () => {
         }
         catch (error)
         {
+            setErrorMessage("Couldn't post blog")
+            setTimeout(() => setErrorMessage(""), 5000)
             console.error("Couldn't post blog", error)
         }
     }
@@ -81,6 +91,7 @@ const App = () => {
     const loginForm = () => (
         <>
             <h2>Log in</h2>
+            { errorMessage && <ErrorMessage message={ errorMessage } /> }
             <form onSubmit={handleLogin}>
                 <label htmlFor="username">username</label>
                 <input 
@@ -108,6 +119,7 @@ const App = () => {
             { !user && loginForm() }
             { user && <>
                     <h2>blogs</h2>
+                    { notification && <Notification message={ notification } /> }
                     <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
                     <form onSubmit={handleCreateBlog}>

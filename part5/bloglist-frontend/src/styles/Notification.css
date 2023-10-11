@@ -1,0 +1,11 @@
+.notification {
+    padding: 5px 10px;
+    color: yellowgreen;
+    border: 2px solid yellowgreen;
+    border-radius: 10px;
+}
+
+.notification p {
+    margin: 0;
+    padding: 0;
+}
