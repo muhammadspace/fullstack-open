@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
+import LoginForm from "./components/LoginForm.jsx"
+import NoteForm from "./components/NoteForm.jsx"
+import Togglable from "./components/Togglable.jsx"
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 import noteService from './services/notes'
@@ -16,7 +19,7 @@ const App = () => {
 
   useEffect( () => {
     console.log("Attempting to fetch credentials from localStorage...")
-    const localUser = JSON.parse(window.localStorage.getItem("user"))
+    const localUser = JSON.parse(window.localStorage.getItem("noteAppLoggedInUser"))
 
     if (localUser)
     {
@@ -80,7 +83,7 @@ const App = () => {
     try
     {
       const user = await loginService.login({ username, password })
-      window.localStorage.setItem("user", JSON.stringify(user))
+      window.localStorage.setItem("noteAppLoggedInUser", JSON.stringify(user))
       noteService.setToken(user.token)
       setUser(user)
       setUsername("")
@@ -95,7 +98,7 @@ const App = () => {
 
   const handleLogout = e => {
     e.preventDefault()
-    window.localStorage.removeItem(user)
+    window.localStorage.removeItem("noteAppLoggedInUser")
     setUser(null)
     setUsername("")
     setPassword("")
@@ -106,69 +109,53 @@ const App = () => {
     ? notes
     : notes.filter(note => note.important)
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <label htmlFor="username" name="username">username</label>
-      <input 
-          type="text" 
-          name="username"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-      />
-      <br/>
-      <label htmlFor="password" name="password">password</label>
-      <input 
-          type="password" 
-          name="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-      />
-      <br/>
-      <button>login</button>
-    </form>
-  )
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-      <button type="submit">save</button>
-    </form>
-  )
   return (
     <div>
-      <h1>Notes</h1>
-      <Notification message={errorMessage} />
-      {
-        !user && loginForm()
-      }
-      {
+        <h1>Notes</h1>
+        <Notification message={errorMessage} />
+        { user === null 
+        ? <Togglable buttonLabel="log in"> 
+            <LoginForm
+                handleLogin={handleLogin}
+                handleUsernameChange={setUsername}                
+                handlePasswordChange={setPassword}
+                username={username}
+                password={password}
+            />
+        </Togglable>
+        : null
+        }
+        {
         user && 
-          <div>
-            <p>
-              {user.name} logged in
-            <button onClick={handleLogout}>log out</button>
-            </p>
-            {noteForm()}
-          </div>
+            <div>
+                <p>
+                    {user.name} logged in
+                    <button onClick={handleLogout}>log out</button>
+                </p>
+                <Togglable buttonLabel="create">
+                    <NoteForm
+                        handleChange={handleNoteChange}
+                        onSubmit={addNote}
+                        value={newNote}
+                        />
+                </Togglable>
+            </div>
       }
       <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
-        </button>
+            <button onClick={() => setShowAll(!showAll)}>
+                show {showAll ? 'important' : 'all' }
+            </button>
       </div>      
       <ul>
-        {notesToShow.map(note => 
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        )}
-      </ul>
-      <Footer />
+            {notesToShow.map(note => 
+            <Note
+                key={note.id}
+                note={note}
+                toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+            )}
+        </ul>
+        <Footer />
     </div>
   )
 }
