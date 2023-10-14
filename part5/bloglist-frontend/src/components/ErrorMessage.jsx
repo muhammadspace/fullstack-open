@@ -2,7 +2,7 @@ import "../styles/ErrorMessage.css"
 
 const ErrorMessage = ({ message }) => {
     return (
-        <div class="error">
+        <div className="error">
             <p>{ message }</p>
         </div>
     )
