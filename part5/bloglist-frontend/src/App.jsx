@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import LoginForm from "./components/LoginForm.jsx"
 import Notification from "./components/Notification.jsx"
 import ErrorMessage from "./components/ErrorMessage.jsx"
 import Togglable from "./components/Togglable.jsx"
@@ -89,35 +90,21 @@ const App = () => {
         }
     }
     
-    const loginForm = () => (
-        <>
-            <h2>Log in</h2>
-            { errorMessage && <ErrorMessage message={ errorMessage } /> }
-            <form onSubmit={handleLogin}>
-                <label htmlFor="username">username</label>
-                <input 
-                    name="username" 
-                    type="text"
-                    value={username}
-                    onChange={({ target }) => setUsername(target.value)}
-                />
-                <br/>
-                <label htmlFor="username">password</label>
-                <input 
-                    name="password" 
-                    type="password"
-                    value={password}
-                    onChange={({ target }) => setPassword(target.value)}
-                />
-                <br />
-                <button>login</button>
-            </form>
-        </>
-    )
-
     return (
         <div>
-            { !user && loginForm() }
+            { errorMessage && <ErrorMessage message={ errorMessage } /> }
+            { 
+                !user 
+                && 
+                <Togglable buttonLabel="log in">
+                    <LoginForm 
+                        handleLogin={handleLogin} 
+                        setPassword={setPassword}
+                        setUsername={setUsername}
+                        username={username} 
+                        password={password}
+                         />
+                </Togglable> }
             { user && <>
                     <h2>blogs</h2>
                     { notification && <Notification message={ notification } /> }
