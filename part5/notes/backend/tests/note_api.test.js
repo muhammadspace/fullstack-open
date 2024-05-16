@@ -1,3 +1,6 @@
+const { test, describe, after, beforeEach } = require("node:test")
+const assert = require("node:assert")
+
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -24,16 +27,14 @@ describe('when there is initially some notes saved', () => {
   test('all notes are returned', async () => {
     const response = await api.get('/api/notes')
 
-    expect(response.body).toHaveLength(helper.initialNotes.length)
+    assert.strictEqual(response.body.length, helper.initialNotes.length)
   })
 
   test('a specific note is within the returned notes', async () => {
     const response = await api.get('/api/notes')
 
     const contents = response.body.map(r => r.content)
-    expect(contents).toContain(
-      'Browser can execute only JavaScript'
-    )
+    assert(contents.includes('Browser can execute only JavaScript'))
   })
 
   describe('viewing a specific note', () => {
@@ -48,7 +49,7 @@ describe('when there is initially some notes saved', () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-      expect(resultNote.body).toEqual(noteToView)
+      assert.deepStrictEqual(resultNote.body, noteToView)
     })
 
     test('fails with statuscode 404 if note does not exist', async () => {
@@ -82,11 +83,10 @@ describe('when there is initially some notes saved', () => {
         .expect('Content-Type', /application\/json/)
 
       const notesAtEnd = await helper.notesInDb()
-      expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1)
+      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
 
       const contents = notesAtEnd.map(n => n.content)
-      expect(contents).toContain(
-        'async/await simplifies making async calls'
+      assert(contents.includes('async/await simplifies making async calls')
       )
     })
 
@@ -102,7 +102,7 @@ describe('when there is initially some notes saved', () => {
 
       const notesAtEnd = await helper.notesInDb()
 
-      expect(notesAtEnd).toHaveLength(helper.initialNotes.length)
+      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
     })
   })
 
@@ -117,13 +117,11 @@ describe('when there is initially some notes saved', () => {
 
       const notesAtEnd = await helper.notesInDb()
 
-      expect(notesAtEnd).toHaveLength(
-        helper.initialNotes.length - 1
-      )
+      assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1)
 
       const contents = notesAtEnd.map(r => r.content)
 
-      expect(contents).not.toContain(noteToDelete.content)
+      assert(!contents.includes(noteToDelete.content))
     })
   })
 })
@@ -154,10 +152,10 @@ describe('when there is initially one user at db', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
     const usernames = usersAtEnd.map(u => u.username)
-    expect(usernames).toContain(newUser.username)
+    assert(usernames.includes(newUser.username))
   })
 
   test('creation fails with proper statuscode and message if username already taken', async () => {
@@ -175,13 +173,13 @@ describe('when there is initially one user at db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result.body.error).toContain('expected `username` to be unique')
+    assert(result.body.error.search('expected `username` to be unique') !== -1)
 
     const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 })
 
-afterAll(async () => {
+after(async () => {
   await mongoose.connection.close()
 })

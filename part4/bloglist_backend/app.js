@@ -29,6 +29,12 @@ app.get("/", (req, res) => {
     res.send("<h1>Hello Blog List!")
 })
 
+if (process.env.NODE_ENV === "test")
+{
+    const testingRouter = require("./controllers/testing.js")
+    app.use("/api/testing", testingRouter)
+}
+
 app.use(middleware.errorHandler)
 
 module.exports = app

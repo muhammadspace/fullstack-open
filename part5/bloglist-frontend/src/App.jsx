@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect, useRef } from "react"
+import Blog from "./components/Blog"
 import LoginForm from "./components/LoginForm.jsx"
 import Notification from "./components/Notification.jsx"
 import ErrorMessage from "./components/ErrorMessage.jsx"
 import Togglable from "./components/Togglable.jsx"
 import BlogForm from "./components/BlogForm.jsx"
-import blogService from './services/blogs'
+import blogService from "./services/blogs"
 import loginService from "./services/login.js"
 
 const App = () => {
@@ -18,10 +18,10 @@ const App = () => {
     const blogFormToggleRef = useRef(null)
 
     useEffect(() => {
-        blogService.getAll().then(fetchedBlogs=> {
+        blogService.getAll().then(fetchedBlogs => {
             setBlogs( fetchedBlogs )
             console.log(fetchedBlogs)
-        })  
+        })
     }, [])
 
     useEffect(() => {
@@ -89,37 +89,37 @@ const App = () => {
             console.error("Couldn't post blog", error)
         }
     }
-    
+
     return (
         <div>
             { errorMessage && <ErrorMessage message={ errorMessage } /> }
-            { 
-                !user 
-                && 
+            {
+                !user
+                &&
                 <Togglable buttonLabel="log in">
-                    <LoginForm 
-                        handleLogin={handleLogin} 
+                    <LoginForm
+                        handleLogin={handleLogin}
                         setPassword={setPassword}
                         setUsername={setUsername}
-                        username={username} 
+                        username={username}
                         password={password}
-                         />
+                    />
                 </Togglable> }
             { user && <>
-                    <h2>blogs</h2>
-                    { notification && <Notification message={ notification } /> }
-                    { errorMessage && <ErrorMessage message={ errorMessage } /> }
-                    <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+                <h2>blogs</h2>
+                { notification && <Notification message={ notification } /> }
+                { errorMessage && <ErrorMessage message={ errorMessage } /> }
+                <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
-                    <Togglable buttonLabel="create new blog" ref={blogFormToggleRef}>
-                        <BlogForm createBlog={handleCreateBlog} />
-                    </Togglable>
-                    
-                    {blogs.toSorted( (a, b) => b.likes - a.likes ).map(blog =>
-                        <Blog key={blog.id} blog={blog} setBlogs={setBlogs} user={user}/>
-                    
-                    )}
-                </>
+                <Togglable buttonLabel="create new blog" ref={blogFormToggleRef}>
+                    <BlogForm createBlog={handleCreateBlog} />
+                </Togglable>
+
+                {blogs.toSorted( (a, b) => b.likes - a.likes ).map(blog =>
+                    <Blog key={blog.id} blog={blog} setBlogs={setBlogs} user={user}/>
+
+                )}
+            </>
             }
         </div>
     )

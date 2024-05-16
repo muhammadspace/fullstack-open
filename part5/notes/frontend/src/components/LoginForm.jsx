@@ -11,6 +11,7 @@ const LoginForm = ({
             <form onSubmit={handleLogin}>
                 <label htmlFor="username" name="username">username</label>
                 <input 
+                    data-testid="username"
                     type="text" 
                     name="username"
                     id="username"
@@ -20,6 +21,7 @@ const LoginForm = ({
                 <br/>
                 <label htmlFor="password" name="password">password</label>
                 <input 
+                    data-testid="password"
                     type="password" 
                     name="password"
                     id="password"

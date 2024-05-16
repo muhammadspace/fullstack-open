@@ -1,5 +1,5 @@
-import axios from 'axios'
-const baseUrl = 'http://localhost:3003/api/blogs'
+import axios from "axios"
+const baseUrl = "http://localhost:3003/api/blogs"
 
 let token = null
 
@@ -12,13 +12,13 @@ const getAll = () => {
 
 const create = async content => {
     const config = {
-            headers: {
-                Authorization: token
+        headers: {
+            Authorization: token
         }
     }
 
     console.log(config)
-  
+
     const response = await axios.post(baseUrl, content, config)
     return response.data
 }
