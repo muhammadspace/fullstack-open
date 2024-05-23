@@ -1,4 +1,4 @@
-import { createNoteAC, toggleImportanceAC } from "../reducers/noteReducer.js"
+import { createNoteAC } from "../reducers/noteReducer.js"
 import { useDispatch } from "react-redux"
 
 const NewNote = () => {
