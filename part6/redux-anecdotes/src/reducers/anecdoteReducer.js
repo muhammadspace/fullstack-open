@@ -1,43 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { setNotificationMessageAC, clearNotificationAC } from "./notificationReducer"
+import anecdoteService from "../services/anecdotes.service.js"
 
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
-
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
+const asObject = (content) => {
   return {
-    content: anecdote,
-    id: getId(),
+    content,
     votes: 0
   }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
-
 const anecdoteSlice = createSlice({
     name: "anecdotes",
-    initialState,
+    initialState: [],
     reducers: {
-        createAnecdoteAC(state, action)
+        appendAnecdoteAC(state, action)
         {
-            return state.concat(asObject(action.payload))
+            return state.concat(action.payload)
         },
-        voteAC(state, action)
+        updateVoteAC(state, action)
         {
-            const id = action.payload
-            const anecdoteToChange = state.find( anc => anc.id === id )
-            anecdoteToChange.votes++;
+            const updatedAnecdote = action.payload
+            const anecdoteToChange = state.find( anc => anc.id === updatedAnecdote.id )
+            anecdoteToChange.votes = updatedAnecdote.votes;
+        },
+        setAnecdotesAC(state, action)
+        {
+            return action.payload
         }
     }
 })
 
+export const { appendAnecdoteAC, setAnecdotesAC } = anecdoteSlice.actions
+
+export const initializeAnecdotesAC = () => {
+    return async dispatch => {
+        const anecdotes = await anecdoteService.getAll()
+        dispatch(setAnecdotesAC(anecdotes))
+    }
+}
+
+export const createAnecdoteAC = (content) => {
+    return async dispatch => {
+        const newAnecdote = await anecdoteService.createAnecdote(asObject(content))
+        dispatch(appendAnecdoteAC(newAnecdote))
+    }
+}
+
+export const voteAC = (anecdote) => {
+    return async dispatch => {
+        const updatedAnecdotea = await anecdoteService.vote(anecdote)
+        dispatch(anecdoteSlice.actions.updateVoteAC(updatedAnecdotea))
+    }
+}
+
 export default anecdoteSlice.reducer
-export const { createAnecdoteAC, voteAC } = anecdoteSlice.actions

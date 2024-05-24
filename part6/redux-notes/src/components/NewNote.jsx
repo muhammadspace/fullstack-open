@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 const NewNote = () => {
     const dispatch = useDispatch()
 
-    const addNote = (e) => {
+    const addNote = async (e) => {
         e.preventDefault()
 
         const content = e.target.note.value

@@ -1,31 +1,17 @@
+import noteService from "../services/notes.service.js"
 import { createSlice } from "@reduxjs/toolkit"
 
 const generateId = () => {
     return (Math.random() * 100000).toFixed(0)
 }
 
-const initialState = [
-    {
-        content: "note 1",
-        important: false,
-        id: 1
-    },
-    {
-        content: "note 2",
-        important: true,
-        id: 2
-    }
-]
-
 const noteSlice = createSlice({
     name: "notes",
-    initialState,
+    initialState: [],
     reducers: {
-        createNoteAC(state, action)
+        appendNoteAC(state, action)
         {
-            const note = { content: action.payload, important: false, id: generateId() }
-
-            return state.concat(note)
+            return state.concat(action.payload)
         },
         toggleImportanceAC(state, action)
         {
@@ -34,9 +20,28 @@ const noteSlice = createSlice({
             const changedNote = { ...noteToChange, important: !noteToChange.important }
 
             return state.map( note => note.id === id ? changedNote : note )
+        },
+        setNotesAC(state, action)
+        {
+            return action.payload
         }
     }
 })
 
-export const { createNoteAC, toggleImportanceAC } = noteSlice.actions
+export const { appendNoteAC, toggleImportanceAC, setNotesAC } = noteSlice.actions
+
+export const initializeNotesAC = () => {
+    return async dispatch => {
+        const notes = await noteService.getAll()
+        dispatch(setNotesAC(notes))
+    }
+}
+
+export const createNoteAC = (content) => {
+    return async dispatch => {
+        const newNote = await noteService.createNote(content)
+        dispatch(noteSlice.actions.appendNoteAC(newNote))
+    }
+}
+
 export default noteSlice.reducer
