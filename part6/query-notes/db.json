@@ -1,0 +1,394 @@
+{
+  "notes": [
+    {
+      "content": "the app state is in redux store",
+      "important": true,
+      "id": "1"
+    },
+    {
+      "content": "state changes are made with actions",
+      "important": true,
+      "id": "2"
+    },
+    {
+      "id": "6b69",
+      "content": "aa",
+      "important": true
+    },
+    {
+      "id": "19aa",
+      "content": "a",
+      "important": true
+    },
+    {
+      "id": "c876",
+      "content": "aaa",
+      "important": true
+    },
+    {
+      "id": "3287",
+      "content": "asdasd",
+      "important": false
+    },
+    {
+      "id": "f937",
+      "content": "asdasd",
+      "important": true
+    },
+    {
+      "id": "291e",
+      "content": "eaeea",
+      "important": false
+    },
+    {
+      "id": "3c4a",
+      "content": "adsadsd",
+      "important": true
+    },
+    {
+      "id": "4af1",
+      "content": "asdasdasd",
+      "important": false
+    },
+    {
+      "id": "bdf2",
+      "content": "asdasd",
+      "important": true
+    },
+    {
+      "id": "8bb0",
+      "content": "sads",
+      "important": false
+    },
+    {
+      "id": "8844",
+      "content": "asdasd",
+      "important": false
+    },
+    {
+      "id": "7c50",
+      "content": "adad",
+      "important": false
+    },
+    {
+      "id": "ded4",
+      "content": "new note",
+      "important": false
+    },
+    {
+      "id": "5971",
+      "content": "asdas",
+      "important": false
+    },
+    {
+      "id": "2515",
+      "content": "asd",
+      "important": false
+    },
+    {
+      "id": "3198",
+      "content": "asdasdasd",
+      "important": true
+    },
+    {
+      "id": "3639",
+      "content": "ssf",
+      "important": false
+    },
+    {
+      "id": "145c",
+      "content": "sfdsf",
+      "important": false
+    },
+    {
+      "id": "f30b",
+      "content": "asdasd",
+      "important": true
+    },
+    {
+      "id": "6b01",
+      "content": "asdasd",
+      "important": false
+    },
+    {
+      "id": "92f5",
+      "content": "asdasd",
+      "important": true
+    },
+    {
+      "id": "b317",
+      "content": "sadad",
+      "important": true
+    },
+    {
+      "id": "5d57",
+      "content": "asdas",
+      "important": true
+    },
+    {
+      "id": "aecb",
+      "content": "dads",
+      "important": true
+    },
+    {
+      "id": "c94b",
+      "content": "asd",
+      "important": true
+    },
+    {
+      "id": "90ff",
+      "content": "a",
+      "important": true
+    },
+    {
+      "id": "3dff",
+      "content": "sda",
+      "important": false
+    },
+    {
+      "id": "c73c",
+      "content": "d",
+      "important": true
+    },
+    {
+      "id": "5b6c",
+      "content": "asd",
+      "important": true
+    },
+    {
+      "id": "1f22",
+      "content": "as",
+      "important": false
+    },
+    {
+      "id": "1851",
+      "content": "da",
+      "important": true
+    },
+    {
+      "id": "a436",
+      "content": "sd",
+      "important": true
+    },
+    {
+      "id": "e422",
+      "content": "asd",
+      "important": true
+    },
+    {
+      "id": "b47d",
+      "content": "a",
+      "important": true
+    },
+    {
+      "id": "9eef",
+      "content": "a",
+      "important": false
+    },
+    {
+      "id": "24d7",
+      "content": "a",
+      "important": false
+    },
+    {
+      "id": "fbad",
+      "content": "a",
+      "important": false
+    },
+    {
+      "id": "aadd",
+      "content": "a",
+      "important": false
+    },
+    {
+      "id": "300a",
+      "content": "a",
+      "important": false
+    },
+    {
+      "id": "a012",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "80ad",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "1768",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "12e9",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "0681",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "3917",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "bd77",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "fbee",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "e66f",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "d4bc",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "eb10",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "5437",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "c4ed",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "b655",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "98bb",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "2bde",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "5a42",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "8fd2",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "ed2a",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "b303",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "25e6",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "2023",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "c318",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "5ffa",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "df5b",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "4392",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "5979",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "88f0",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "e5b6",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "f3e0",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "42f8",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "d158",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "adef",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "98ee",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "0df4",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "cda3",
+      "content": "",
+      "important": false
+    },
+    {
+      "id": "1ee3",
+      "content": "",
+      "important": false
+    }
+  ]
+}
