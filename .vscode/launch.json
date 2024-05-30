@@ -11,7 +11,7 @@
 			"skipFiles": [
 				"<node_internals>/**"
 			],
-			"program": "${workspaceFolder}/part4/bloglist_backend/index.js",
+			"program": "${workspaceFolder}/part6/query-anecdotes/index.js",
 			"env":{
 				"PORT": "3001",
 				"MONGODB_URI": "mongodb+srv://fullstack:fullstack@fso.khnzyyx.mongodb.net/bloglist?retryWrites=true&w=majority",

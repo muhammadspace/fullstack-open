@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { voteAC } from "../reducers/anecdoteReducer.js"
 import { setNotificationAC } from "../reducers/notificationReducer.js"
 
-const Anecdote = ({ anecdote, vote}) => {
+const Anecdote = ({ anecdote, vote }) => {
     return (
         <>
             <div>
