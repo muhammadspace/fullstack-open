@@ -1,0 +1,14 @@
+.blog {
+    margin: 5px;
+    padding: 5px;
+    border: 2px solid lightblue;
+    background-color: azure;
+}
+
+.blog > p {
+    font-weight: bold;
+}
+
+.blog p {
+    margin: 0;
+}

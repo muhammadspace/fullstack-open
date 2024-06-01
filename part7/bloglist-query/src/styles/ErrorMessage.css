@@ -1,0 +1,11 @@
+.error {
+    padding: 5px 10px;
+    color: red;
+    border-radius: 10px;
+    background-color: mistyrose;
+}
+
+.error p {
+    margin: 0;
+    padding: 0;
+}
