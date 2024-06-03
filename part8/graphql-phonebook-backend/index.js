@@ -111,7 +111,7 @@ const resolvers = {
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
-startStandaloneServer(apolloServer, { listen: { port: 5000 } }).then(({ url }) => {
+startStandaloneServer(apolloServer, { listen: { port: 4000 } }).then(({ url }) => {
     console.log(`
     Apollo Server running at ${url} 🚀
     `)
