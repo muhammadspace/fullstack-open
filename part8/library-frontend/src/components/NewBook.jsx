@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from "@apollo/client"
 import { ADD_BOOK, ALL_BOOKS } from '../queries'
+import { Navigate } from 'react-router-dom'
 
 const NewBook = () => {
     const [title, setTitle] = useState('')
@@ -15,7 +16,13 @@ const NewBook = () => {
             const messages = error.graphQLErrors.map(e => e.message)
             console.error(messages)
         },
-        refetchQueries: [ { query: ALL_BOOKS } ]
+        update: (cache, result) => {
+            cache.updateQuery({ query: ALL_BOOKS }, (data) => {
+                return {
+                    allBooks: data.allBooks.concat(result.data.addBook)
+                }
+            })
+        },
     })
 
     const submit = async (event) => {
@@ -37,6 +44,9 @@ const NewBook = () => {
 
     return (
         <div>
+            {
+                !localStorage.getItem("library-user-token") && <Navigate to="/login" replace />
+            }
             <form onSubmit={submit}>
                 <div>
           title

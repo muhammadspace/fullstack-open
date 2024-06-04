@@ -81,7 +81,7 @@ const resolvers = {
 
             return Person.find({ phone: { $exists: args.phone === "YES" } })
         },
-        findPerson: (obj, args) => Person.find({ name: args.name }),
+        findPerson: async (obj, args) => await Person.findOne({ name: args.name }),
         me: (obj, args, context) => {
             return context.currentUser
         }
@@ -116,7 +116,7 @@ const resolvers = {
             } 
             catch (error)
             {
-                throw new GraphQLError("Saving person failed", {
+                throw new GraphQLError("Saving person failed." + error.message, {
                     extensions: {
                         code: "BAD_USER_INPUT",
                         invalidArgs: args.name,

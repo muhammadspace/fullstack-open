@@ -10,14 +10,20 @@ const PersonForm = ({ setError }) => {
     const [createPerson] = useMutation(CREATE_PERSON, {
         onError: (error) => {
             const messages = error.graphQLErrors.map(e => e.message).join('\n')
-            setError(error.message)
+            setError(messages)
         },
-        refetchQueries: [ { query: ALL_PERSONS }]
+        update: (cache, response) => {
+            cache.updateQuery({ query: ALL_PERSONS }, (data) => {
+                return {
+                    allPersons: data.allPersons.concat(response.data.addPerson)
+                }
+            })
+        }
     })
 
     const onSubmit = e => {
         e.preventDefault()
-        createPerson({ variables: { name, phone, street, city }})
+        createPerson({ variables: { name, phone: phone ? phone : null, street, city }})
         setName("")
         setPhone("")
         setStreet("")

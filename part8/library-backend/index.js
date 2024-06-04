@@ -67,7 +67,7 @@ type Mutation {
 const resolvers = {
     Author: {
         bookCount: (obj) => {
-            return books.filter(book => book.author === obj.name).length
+            return Book.collection.countDocuments({ author: obj._id })
         }
     },
     Book: {
