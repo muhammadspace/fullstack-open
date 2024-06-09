@@ -1,14 +1,36 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom"
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient, useSubscription } from "@apollo/client"
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm"
 import Recommended from "./components/Recommended";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+
+const updateCache = (cache, query, bookAdded) => {
+    const uniqueByTitle = (arr) => {
+        const seen =  new Set()
+        return arr.filter(item => {
+            return seen.has(item.title) ? false : seen.add(item.title)
+        })
+    }
+
+    cache.updateQuery(query, ({ allBooks }) => {
+        return {
+            allBooks: uniqueByTitle(allBooks.concat(bookAdded))
+        }
+    })
+}
 
 const App = () => {
+    useSubscription(BOOK_ADDED, {
+        onData: ({ data, client }) => {
+            window.alert(`A new book was added ${data.data.bookAdded.title}`)
+            updateCache(client.cache, { query: ALL_BOOKS }, data.data.bookAdded)
+        }
+    })
     const client = useApolloClient()
     const [token, setToken] = useState(null)
 

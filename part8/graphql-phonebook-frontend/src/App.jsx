@@ -1,16 +1,35 @@
 import { useEffect, useState } from 'react'
-import { useQuery, useApolloClient } from "@apollo/client"
+import { useQuery, useApolloClient, useSubscription } from "@apollo/client"
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import PhoneForm from './components/PhoneForm'
 import LoginForm from './components/LoginForm'
-import { ALL_PERSONS } from './queries'
+import { ALL_PERSONS, PERSON_ADDED } from './queries'
+
+const updateCachce = (cache, query, personAdded) => {
+    const uniqueByName = (arr) => {
+        const seen = new Set()
+        console.log(seen)
+        return arr.filter(item => {
+            return seen.has(item.name) ? false : seen.add(item.name)
+        })
+    }
+
+    cache.updateQuery(query, ({ allPersons }) => {
+        return {
+            allPersons: uniqueByName(allPersons.concat(personAdded))
+        }
+    })
+}
 
 function App() {
     const client = useApolloClient()
     const [errorMessage, setErrorMessage] = useState("")
     const [token, setToken] = useState(null)
     const persons = useQuery(ALL_PERSONS)
+    useSubscription(PERSON_ADDED, {
+        onData: ({ data, client }) => updateCachce(client.cache, { query: ALL_PERSONS }, data.data.personAdded)
+    })
 
     useEffect(() => {
         const token = localStorage.getItem("phonebook-user-token")
@@ -50,7 +69,7 @@ function App() {
             <button onClick={logout}>logout</button>
             <h1>Phonebook</h1>
             <Persons persons={persons.data.allPersons} />
-            <PersonForm setError={setError} />
+            <PersonForm updateCache={updateCachce} setError={setError} />
             <PhoneForm setError={setError} />
         </div>
     )
