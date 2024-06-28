@@ -2,7 +2,11 @@
     "eslint.workingDirectories": [
         "./part9/patientor-backend",
         "./part9/patientor-frontend",
-        "./part9/flight-diary"
+        "./part9/flight-diary-backend",
+        "./part9/flight-diary-frontend",
+        "./part9/halfstack",
+        "./part9/tsreact",
+        "./part9/tsnotes"
     ]
     // "editor.defaultFormatter": "esbenp.prettier-vscode",
     // "prettier.useEditorConfig": false,

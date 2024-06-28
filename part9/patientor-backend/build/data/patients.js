@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../utils");
+const uuid_1 = require("uuid");
 const data = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
@@ -22,7 +24,7 @@ const data = [
         "name": "Hans Gruber",
         "dateOfBirth": "1970-04-25",
         "ssn": "250470-555L",
-        "gender": "other",
+        "gender": "male",
         "occupation": "Technician"
     },
     {
@@ -42,4 +44,9 @@ const data = [
         "occupation": "Digital evangelist"
     }
 ];
-exports.default = data;
+const patients = data.map(p => {
+    const patient = (0, utils_1.toNewPatient)(p);
+    patient.id = (0, uuid_1.v1)();
+    return patient;
+});
+exports.default = patients;
