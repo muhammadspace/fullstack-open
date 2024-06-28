@@ -1,6 +1,11 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "prettier.useEditorConfig": false,
-    "prettier.semi": false,
-    "prettier.useTabs": true
+    "eslint.workingDirectories": [
+        "./part9/patientor-backend",
+        "./part9/patientor-frontend",
+        "./part9/flight-diary"
+    ]
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // "prettier.useEditorConfig": false,
+    // "prettier.semi": false,
+    // "prettier.useTabs": true
 }
