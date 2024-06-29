@@ -5,10 +5,10 @@ import patientRouter from "./routes/patients";
 
 const app = express();
 
-app.use('/', cors());
-app.use('/', express.json());
+app.use("/", cors());
+app.use("/", express.json());
 
-app.get("/ping", (_req, res) => {
+app.get("/api/ping", (_req, res) => {
     console.log("Someone pinged here");
     res.send("pong");
 });
